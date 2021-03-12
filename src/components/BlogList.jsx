@@ -5,15 +5,13 @@ import BlogDetails from "./BlogDetails";
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const history = useHistory();
+  const fetchData = async () => {
+    const blogData = await fetch("http://127.0.0.1:3232/blog");
+    setBlogs(await blogData.json());
+  };
   useEffect(() => {
-    (async () => {
-      const blogData = await fetch(
-        "http://127.0.0.1:3232/blog"
-      ).then((response) => response.json());
-      setBlogs(blogData);
-    })();
+    fetchData();
   }, []);
-  console.log("This the BLOGS:", blogs);
 
   return (
     <>
@@ -22,22 +20,26 @@ const BlogList = () => {
       {!!blogs.length ? (
         <>
           <Route exact path="/">
-            <ul>
+            <ul data-testid="blogList">
               {blogs.map((blog) => {
                 return (
-                  <>
-                    <li key={blog.id}>
-                      <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
-                    </li>
+                  <li key={blog.id}>
+                    <Link data-testid={blog.id} to={`/blog/${blog.id}`}>
+                      <strong>{blog.title}</strong>
+                    </Link>
                     <hr />
-                  </>
+                  </li>
                 );
               })}
             </ul>
           </Route>
           <Route path="/blog/:id">
-            <BlogDetails blogs={blogs} />
-            <button type="button" onClick={() => history.goBack()}>
+            <BlogDetails blogs={blogs} data-testid="blogDetails" />
+            <button
+              data-testid="backButton"
+              type="button"
+              onClick={() => history.goBack()}
+            >
               GO BACK
             </button>
           </Route>
