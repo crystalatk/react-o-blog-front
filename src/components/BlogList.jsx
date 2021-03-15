@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
 import { Route, Link, useHistory } from "react-router-dom";
 import BlogDetails from "./BlogDetails";
+import { connect } from "react-redux";
+import { actionReload } from "../redux/action";
 
-const BlogList = () => {
+const BlogList = ({ refresh, triggerReload }) => {
   const [blogs, setBlogs] = useState([]);
   const history = useHistory();
   const fetchData = async () => {
     const blogData = await fetch("http://127.0.0.1:3232/blog");
     setBlogs(await blogData.json());
+    triggerReload();
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
     <>
@@ -51,4 +54,18 @@ const BlogList = () => {
   );
 };
 
-export default BlogList;
+const mapStateToProps = (state) => {
+  return {
+    refresh: state.refresh,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    triggerReload: () => {
+      dispatch(actionReload(false));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BlogList);
