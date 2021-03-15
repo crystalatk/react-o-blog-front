@@ -10,6 +10,12 @@ const BlogDetails = ({ blogs }) => {
       <h1>{blog.title}</h1>
       <h5>{blog.date}</h5>
       <p className="blog-body">{blog.body}</p>
+      <form data-testid="commentSection">
+        <label>
+          <textarea data-testid="commentInput" />
+        </label>
+        <button data-testid="submitCommentButton">Add Comment</button>
+      </form>
     </>
   );
 };
